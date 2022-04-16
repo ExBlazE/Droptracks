@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class GameManager : MonoBehaviour
 {
@@ -36,7 +39,7 @@ public class GameManager : MonoBehaviour
     private float scoreBlinkTime = 0.5f;
 
     private int score;
-    private float timeLeft = 10;
+    private float timeLeft = 60;
     private bool isGameActive = false;
     private bool isGamePaused = false;
 
@@ -56,17 +59,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject pauseScreen;
     [SerializeField] GameObject gameOverScreen;
 
-    [Space]
-
-    [SerializeField] AudioSource musicSource;
-    [SerializeField] Slider volumeSlider;
-
     void Start()
     {
         originalGravity = Physics.gravity;
         Time.timeScale = 0;
 
         ShowBestScore();
+        MusicManager.instance.SetVolume(MusicManager.instance.GetVolume());
+
+        titleScreen.SetActive(true);
+        volumeBox.SetActive(true);
+        pauseScreen.SetActive(false);
+        gameOverScreen.SetActive(false);
     }
 
     public void StartGame()
@@ -93,8 +97,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        musicSource.volume = volumeSlider.value;
-
         if (!isGameActive)
             return;
 
@@ -266,7 +268,27 @@ public class GameManager : MonoBehaviour
                 ScoreManager.instance.SetScoreName(string.Empty);
         }
 
+        ScoreManager.instance.SaveData();
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ExitGame()
+    {
+        if (isNewBestScore)
+        {
+            ScoreManager.instance.SetBestScore(score);
+            if (!isNameGiven)
+                ScoreManager.instance.SetScoreName(string.Empty);
+        }
+
+        ScoreManager.instance.SaveData();
+
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit();
+#endif
     }
 
     void GameOver()

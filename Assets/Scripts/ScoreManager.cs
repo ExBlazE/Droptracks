@@ -25,11 +25,15 @@ public class ScoreManager : MonoBehaviour
     {
         if (score > bestScore)
         {
-            bestScore = score;
             return true;
         }
         else
             return false;
+    }
+
+    public void SetBestScore(int score)
+    {
+        bestScore = score;
     }
 
     public int GetBestScore()

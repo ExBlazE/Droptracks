@@ -39,7 +39,9 @@ public class GameManager : MonoBehaviour
     private float timeLeft = 10;
     private bool isGameActive = false;
     private bool isGamePaused = false;
+
     private bool isNewBestScore = false;
+    private bool isNameGiven = false;
 
     [Space]
 
@@ -256,6 +258,14 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         Physics.gravity = originalGravity;
+
+        if (isNewBestScore)
+        {
+            ScoreManager.instance.SetBestScore(score);
+            if (!isNameGiven)
+                ScoreManager.instance.SetScoreName(string.Empty);
+        }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -287,8 +297,15 @@ public class GameManager : MonoBehaviour
     {
         if (isNewBestScore)
         {
+            isNameGiven = true;
+            ScoreManager.instance.SetBestScore(score);
             ScoreManager.instance.SetScoreName(nameBox.text);
             ShowBestScore();
         }
+    }
+
+    public bool GetGameActive()
+    {
+        return isGameActive;
     }
 }

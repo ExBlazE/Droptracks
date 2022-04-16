@@ -41,7 +41,10 @@ public class Target : MonoBehaviour
     public void Hit()
     {
         targetMaterial.color = postHitMaterial.color;
-        gameManager.AddScore(1);
-        gameManager.BlinkScore();
+        if (gameManager.GetGameActive())
+        {
+            gameManager.AddScore(1);
+            gameManager.BlinkScore();
+        }
     }
 }

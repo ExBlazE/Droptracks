@@ -27,6 +27,7 @@ public class MusicManager : MonoBehaviour
     void Start()
     {
         musicSource = GetComponent<AudioSource>();
+        volumeSlider = GameObject.Find("Volume Slider").GetComponent<Slider>();
     }
 
     void Update()
